@@ -32,17 +32,17 @@ export default class User extends Component {
   }
 
   logout = () => {
-    // Call API to logout user
-    logoutUser()
-      .then(res => {
+    // // Call API to logout user
+    // logoutUser()
+    //   .then(res => {
         this.setState({
           UserLog: false,
           userLogged: "",
           registeredPosts: [],
           unregisteredPosts: []
         });
-      })
-      .catch(err => console.log(err));
+      // })
+      // .catch(err => console.log(err));
   }
 
   checkPostRegisteration = (post, userId) => {

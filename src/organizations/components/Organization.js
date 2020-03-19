@@ -29,15 +29,15 @@ export default class Organization extends Component {
 
     // Logout Organization
     logout = () => {
-        organizationLogout()
-            .then(res => {
+        // organizationLogout()
+        //     .then(res => {
                 this.setState({
                     organizationLogged: false,
                     organizationId: "",
                     organizationPosts: ""
                 });
-            })
-            .catch(err => console.log(err));
+            // })
+            // .catch(err => console.log(err));
     }
 
     // Try to Login Organization with the submitted data
