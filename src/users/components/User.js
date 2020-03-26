@@ -14,7 +14,8 @@ export default class User extends Component {
       users: [],
       registeredPosts: [],
       unregisteredPosts: [],
-      showRegisteredPosts: false
+      showRegisteredPosts: false,
+      userToken: localStorage.getItem("userToken")
     };
   }
   //get all users from API
@@ -32,17 +33,17 @@ export default class User extends Component {
   }
 
   logout = () => {
-    // // Call API to logout user
-    // logoutUser()
-    //   .then(res => {
-        this.setState({
+    // logout user
+      this.setState({
           UserLog: false,
           userLogged: "",
           registeredPosts: [],
-          unregisteredPosts: []
-        });
-      // })
-      // .catch(err => console.log(err));
+          unregisteredPosts: [],
+          userToken: ""
+      });
+
+      // Clear the JWT fron Local Storage
+      localStorage.removeItem("userToken");
   }
 
   checkPostRegisteration = (post, userId) => {
@@ -117,10 +118,15 @@ export default class User extends Component {
   authenticateUser = async user => {
     try {
       const res = await loginUser(user);
+
+      // Store the Recieved JWT in Local Storage
+      localStorage.setItem("userToken", res.data.token);
+
       this.setState({
         UserLog: true,
         userLogged: res.data.user.id,
-        userName: res.data.user.name
+        userName: res.data.user.name,
+        userToken: localStorage.getItem("userToken")
       });
 
       return true
@@ -163,7 +169,7 @@ export default class User extends Component {
 
   // Create Delete Function for user
   deleteUser = () => {
-    deleteUserById(this.state.userLogged)
+    deleteUserById(this.state.userLogged, this.state.userToken)
       .then(response => {
         // Create Varible for control to Array for User
         // & Create ForLoop to check all index
@@ -179,8 +185,13 @@ export default class User extends Component {
         this.setState({
           UserLog: false,
           userLogged: "",
-          registeredPosts: posts
+          userToken: "",
+          registeredPosts: [],
+          unregisteredPosts: []
         });
+
+        // Remove JWT from Local Storage
+        localStorage.removeItem("userToken");
       })
       .catch(error => {
         console.log("ERROR: ", error);

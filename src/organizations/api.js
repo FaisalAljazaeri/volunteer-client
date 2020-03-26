@@ -11,8 +11,17 @@ const addNewOrganization =(organization)=>{
 }
 // Delete Organization by ID
 
-const deleteOrganization = (id) => {
-    return axios.delete(`${apiUrl}/organizations/${id}`);
+const deleteOrganization = (id, token) => {
+    return axios.delete(
+            `${apiUrl}/organizations/${id}`, 
+            { 
+                headers: 
+                { 
+                    "Content-type": "application/json", 
+                    "x-auth-organizationToken": token 
+                } 
+            }
+        );
   }
 
 // Login Organization

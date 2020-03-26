@@ -13,7 +13,8 @@ export default class Organization extends Component {
             organizations: [],
             currentOrganizationPosts: [],
             organizationLogged: false,
-            organizationId: ""
+            organizationId: "",
+            organizationToken: localStorage.getItem("organizationToken")
         };
     }
     componentDidMount() {
@@ -29,24 +30,29 @@ export default class Organization extends Component {
 
     // Logout Organization
     logout = () => {
-        // organizationLogout()
-        //     .then(res => {
-                this.setState({
-                    organizationLogged: false,
-                    organizationId: "",
-                    organizationPosts: ""
-                });
-            // })
-            // .catch(err => console.log(err));
+        this.setState({
+            organizationLogged: false,
+            organizationId: "",
+            currentOrganizationPosts: "",
+            organizationToken: ""
+        });
+
+        // Clear the JWT fron Local Storage
+        localStorage.removeItem("organizationToken");
     }
 
     // Try to Login Organization with the submitted data
     authenticateOrganization = async organization => {
         try{
             const res = await organizationLogin(organization);
+
+            // Store the Recieved JWT in Local Storage
+            localStorage.setItem("organizationToken", res.data.token);
+
             this.setState({
                 organizationLogged: true,
-                organizationId: res.data.organization.id
+                organizationId: res.data.organization.id,
+                organizationToken: localStorage.getItem("organizationToken")
             });
 
             return true
@@ -105,13 +111,17 @@ export default class Organization extends Component {
     };
     //Creat Fountain Dlete Organization By Id
     deleteOrg=()=>{
-        deleteOrganization(this.state.organizationId)
+        deleteOrganization(this.state.organizationId, this.state.organizationToken)
         .then(response=>{
             this.setState({
                 organizationLogged: false,
                 currentOrganizationPosts:[],
-                organizationId:""
+                organizationId:"",
+                organizationToken: ""
             })
+
+            // Remove JWT from Local Storage
+            localStorage.removeItem("organizationToken");
         })
     .catch(error => {
         console.log(error);})

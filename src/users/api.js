@@ -11,8 +11,17 @@ const createNewUser =(user)=>{
 }
 
 // Delete user By ID
-const deleteUserById =(id)=>{
-     return axios.delete(`${apiUrl}/users/${id}`)
+const deleteUserById =(id, token)=>{
+     return axios.delete(
+         `${apiUrl}/users/${id}`,
+         {
+             headers:
+             {
+                 "Content-type": "application/json",
+                 "x-auth-userToken": token
+             }
+         }
+    )
 };
 
 // Login User
